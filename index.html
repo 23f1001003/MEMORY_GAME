@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automata 2025 | Memory Cipher Game</title>
+    <style>
+        body {
+            text-align: center;
+            background: #1a1a1a;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        #sequence {
+            font-size: 30px;
+            margin: 50px;
+        }
+        input {
+            padding: 10px;
+            font-size: 18px;
+            margin: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 20px;
+            background: #ffeb3b;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        #clue {
+            display: none;
+            font-size: 24px;
+            color: #ffeb3b;
+            margin-top: 30px;
+        }
+        #exit, #restart {
+            display: none;
+            padding: 10px 20px;
+            margin: 20px;
+            background: red;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        #correctCount {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>Automata 2025 | Memory Cipher Game</h1>
+<p>Memorize the Sequence & Reproduce It! (You will get 3 attempts per sequence)</p>
+<P>Total 30 Sequences are there in game.</P>
+<P>Sequences will be display for 5 Seconds Only Once.</P>
+<div id="correctCount">Correct Answers: 0 / 8</div>
+<div id="sequence"></div>
+<input type="text" id="playerInput" placeholder="Enter Sequence" maxlength="20">
+<button onclick="checkSequence()">Submit</button>
+<button onclick="passSequence()">Pass</button>
+<div id="clue">🎯 Congratulations! Your Clue is: YELLOW DOOR</div>
+<button id="exit" onclick="exitGame()">Exit</button>
+<button id="restart" onclick="restartGame()">Restart</button>
+
+<script>
+const preDefinedSequences = [
+    "4t65%g#", "78hg*3", "12@e$8", "pq#9m6", "5h8&lk",
+    "2x!3bn", "kj7^5r", "mn98!a", "x6t#4q", "rt@9lo",
+    "w4%8ty", "7p*9mn", "qh56&x", "zx!3bn", "yu7^1p",
+    "bn98!v", "nm6t#4", "pl@9ko", "m4%8la", "kp*5lm",
+    "vg56&x", "fr!3ty", "kj7^2r", "mn98!b", "x6t#7q",
+    "rt@2lo", "m4%6la", "bp*9lm", "vg54&x", "yr!8ty"
+];
+
+let correctCount = 0;
+let currentIndex = 0;
+let attempt = 0;
+
+function generateSequence() {
+    if (currentIndex >= preDefinedSequences.length) {
+        currentIndex = 0;
+        document.getElementById("restart").style.display = "block";
+        return;
+    }
+    document.getElementById("sequence").innerText = preDefinedSequences[currentIndex];
+    setTimeout(() => {
+        document.getElementById("sequence").innerText = "";
+    }, 3000);
+    attempt = 0;
+}
+
+function checkSequence() {
+    let playerInput = document.getElementById("playerInput").value.trim();
+    if (playerInput === preDefinedSequences[currentIndex]) {
+        correctCount++;
+        document.getElementById("correctCount").innerText = `Correct Answers: ${correctCount} / 5`;
+        document.getElementById("playerInput").value = "";
+        currentIndex++;
+        if (correctCount === 8) {
+            document.getElementById("clue").style.display = "block";
+            document.getElementById("exit").style.display = "block";
+        } else {
+            alert("Correct! Next Sequence");
+            setTimeout(generateSequence, 1000);
+        }
+    } else {
+        attempt++;
+        if (attempt >= 3) {
+            alert("3 Attempts Over! Moving to Next Sequence");
+            currentIndex++;
+            document.getElementById("playerInput").value = "";
+            setTimeout(generateSequence, 1000);
+        } else {
+            alert(`Wrong Sequence! ${3 - attempt} Attempt(s) Left`);
+            document.getElementById("playerInput").value = "";
+        }
+    }
+}
+
+function passSequence() {
+    alert("You chose to Pass! Moving to Next Sequence");
+    currentIndex++;
+    document.getElementById("playerInput").value = "";
+    setTimeout(generateSequence, 1000);
+}
+
+function exitGame() {
+    alert("Thank you for playing!");
+    window.close();
+}
+
+function restartGame() {
+    correctCount = 0;
+    currentIndex = 0;
+    attempt = 0;
+    document.getElementById("correctCount").innerText = "Correct Answers: 0 / 8";
+    document.getElementById("clue").style.display = "none";
+    document.getElementById("exit").style.display = "none";
+    document.getElementById("restart").style.display = "none";
+    generateSequence();
+}
+
+generateSequence();
+</script>
+</body>
+</html>
