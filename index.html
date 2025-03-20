@@ -7,47 +7,116 @@
     <style>
         body {
             text-align: center;
-            background: #1a1a1a;
-            color: #fff;
+            background: url('5.png') no-repeat;
+            background-size:100% 120%;
             font-family: Arial, sans-serif;
         }
-        #sequence {
-            font-size: 30px;
-            margin: 50px;
+        h1 {
+            font-size: 50px;
+            margin-top: 40px;
+            color: #ffeb3b;
+            letter-spacing: 2px;
         }
+
+        p {
+            font-size: 22px;
+            margin: 10px 0;
+            color: #dddddd;
+        }
+
+        #correctCount {
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            color: #00e676;
+        }
+
+         #sequence {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 50px auto;
+            padding: 20px;
+            width: 60%;
+            border: 2px dashed #ffeb3b;
+            border-radius: 10px;
+            background-color: #212121;
+            color: #ffeb3b;
+        }
+
         input {
-            padding: 10px;
-            font-size: 18px;
+            padding: 15px 20px;
+            font-size: 24px;
             margin: 20px;
+            border-radius: 10px;
+            border: 2px solid #333;
+            background-color: #f0f0f0;
+            color: #000;
+            width: 300px;
             text-align: center;
         }
+
         button {
-            padding: 10px 20px;
-            margin: 20px;
-            background: #ffeb3b;
+            padding: 15px 30px;
+            margin: 20px 10px;
+            font-size: 24px;
+            border-radius: 10px;
             border: none;
             cursor: pointer;
-            font-size: 18px;
+            transition: all 0.3s ease;
         }
-        #clue {
-            display: none;
-            font-size: 24px;
-            color: #ffeb3b;
-            margin-top: 30px;
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
         }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .submit-btn {
+            background-color: #ffeb3b;
+            color: #000;
+        }
+
+        .pass-btn {
+            background-color: #ffa726;
+            color: #000;
+        }
+
         #exit, #restart {
             display: none;
-            padding: 10px 20px;
-            margin: 20px;
-            background: red;
+            background-color: #e53935;
+            color: #fff;
+        }
+
+        #clue {
+            display: none;
+            font-size: 28px;
+            color: #00e676;
+            margin-top: 40px;
+        }
+
+        #clueButton {
+            margin-top: 25px;
+            padding: 15px 30px;
+            font-size: 22px;
+            border-radius: 10px;
+            background-color: #00c853;
             color: #fff;
             border: none;
             cursor: pointer;
-            font-size: 18px;
+            transition: all 0.3s ease;
         }
-        #correctCount {
-            font-size: 20px;
-            margin-bottom: 20px;
+
+        #clueButton:hover {
+            background-color: #00e676;
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: #777;
         }
     </style>
 </head>
@@ -61,8 +130,12 @@
 <input type="text" id="playerInput" placeholder="Enter Sequence" maxlength="20">
 <button onclick="checkSequence()">Submit</button>
 <button onclick="passSequence()">Pass</button>
-<div id="clue">🎯 Congratulations! Your Clue is: YELLOW DOOR</div>
-<button id="exit" onclick="exitGame()">Exit</button>
+<div id="clue">
+    🎯 <strong>Congratulations!</strong> Your Next coding challenge is: <span style="color: #ffeb3b;"></span>
+    <br><br>
+    <button id="clueButton">Question</button>
+</div>
+
 <button id="restart" onclick="restartGame()">Restart</button>
 
 <script>
@@ -82,13 +155,13 @@ let attempt = 0;
 function generateSequence() {
     if (currentIndex >= preDefinedSequences.length) {
         currentIndex = 0;
-        document.getElementById("restart").style.display = "block";
+        document.getElementById("restart").style.display = "inline-block";
         return;
     }
     document.getElementById("sequence").innerText = preDefinedSequences[currentIndex];
     setTimeout(() => {
         document.getElementById("sequence").innerText = "";
-    }, 3000);
+    }, 5000); // 5 seconds to memorize
     attempt = 0;
 }
 
@@ -96,39 +169,39 @@ function checkSequence() {
     let playerInput = document.getElementById("playerInput").value.trim();
     if (playerInput === preDefinedSequences[currentIndex]) {
         correctCount++;
-        document.getElementById("correctCount").innerText = `Correct Answers: ${correctCount} / 5`;
+        document.getElementById("correctCount").innerText = `Correct Answers: ${correctCount} / 8`;
         document.getElementById("playerInput").value = "";
         currentIndex++;
-        if (correctCount === 8) {
+        if (correctCount === 1) {
             document.getElementById("clue").style.display = "block";
-            document.getElementById("exit").style.display = "block";
+            document.getElementById("exit").style.display = "inline-block";
         } else {
-            alert("Correct! Next Sequence");
+            alert("✅ Correct! Next Sequence");
             setTimeout(generateSequence, 1000);
         }
     } else {
         attempt++;
         if (attempt >= 3) {
-            alert("3 Attempts Over! Moving to Next Sequence");
+            alert("❌ 3 Attempts Over! Moving to Next Sequence");
             currentIndex++;
             document.getElementById("playerInput").value = "";
             setTimeout(generateSequence, 1000);
         } else {
-            alert(`Wrong Sequence! ${3 - attempt} Attempt(s) Left`);
+            alert(`❌ Wrong Sequence! ${3 - attempt} Attempt(s) Left`);
             document.getElementById("playerInput").value = "";
         }
     }
 }
 
 function passSequence() {
-    alert("You chose to Pass! Moving to Next Sequence");
+    alert("➡️ You chose to Pass! Moving to Next Sequence");
     currentIndex++;
     document.getElementById("playerInput").value = "";
     setTimeout(generateSequence, 1000);
 }
 
 function exitGame() {
-    alert("Thank you for playing!");
+    alert("🚪 Thank you for playing!");
     window.close();
 }
 
@@ -144,6 +217,10 @@ function restartGame() {
 }
 
 generateSequence();
+
+document.getElementById("clueButton").addEventListener("click", function() {
+    window.open("https://pahadiboy04.github.io/dinogame/", "_blank");
+});
 </script>
 </body>
 </html>
