@@ -20,7 +20,12 @@
             color: #ffeb3b;
             letter-spacing: 2px;
         }
-
+        h2 {
+            font-size: 25px;
+            margin-top: 5px;
+            color: black;
+            letter-spacing: 2px;
+        }
         p {
             font-size: 22px;
             margin: 10px 0;
@@ -87,10 +92,16 @@
             color: #000;
         }
 
-        #exit, #restart {
+        #restart {
             display: none;
             background-color: #e53935;
             color: #fff;
+        }
+
+        #startButton {
+            background-color: #00c853;
+            color: #fff;
+            display: inline-block;
         }
 
         #clue {
@@ -125,10 +136,11 @@
 </head>
 <body>
 <h1>Automata 2025</h1>
-<p><strong>Memory Cipher Game</strong></p>
-<p>Memorize the Sequence & Reproduce It! (You will get 3 attempts per sequence)</p>
-<p>Total 30 Sequences are there in the game.</p>
+<h2><strong>Memory Cipher Game</strong></h2>
+<p>Total 30 Sequences are there in the game.<b> (#You will get 3 attempts then it will PASS to Next Sequence)</b></p>
 <p>Sequences will be displayed for <strong>5 Seconds Only Once</strong>.</p>
+<p>Memorize the Sequence & Reproduce only 8 Sequence correct out of 30! (If you couldn't,<b>Game will restart from 0!</b>)</p>
+<p><b>PASS button</b> will skip Current Sequence.</p>
 
 <div id="correctCount">Correct Answers: 0 / 8</div>
 <div id="sequence"></div>
@@ -144,8 +156,8 @@
     <button id="clueButton">Question</button>
 </div>
 
-
 <button id="restart" onclick="restartGame()">Restart</button>
+<button id="startButton" onclick="startGame()">Start Game</button>
 
 <footer>Automata 2025 | Designed by YourTeam</footer>
 
@@ -162,6 +174,17 @@ const preDefinedSequences = [
 let correctCount = 0;
 let currentIndex = 0;
 let attempt = 0;
+
+function startGame() {
+    document.getElementById("startButton").style.display = "none"; // Hide start button after click
+    correctCount = 0;
+    currentIndex = 0;
+    attempt = 0;
+    document.getElementById("correctCount").innerText = "Correct Answers: 0 / 8";
+    document.getElementById("clue").style.display = "none";
+    document.getElementById("restart").style.display = "none";
+    generateSequence();
+}
 
 function generateSequence() {
     if (currentIndex >= preDefinedSequences.length) {
@@ -185,7 +208,7 @@ function checkSequence() {
         currentIndex++;
         if (correctCount === 8) {
             document.getElementById("clue").style.display = "block";
-            document.getElementById("exit").style.display = "inline-block";
+            document.getElementById("restart").style.display = "inline-block";
         } else {
             alert("✅ Correct! Next Sequence");
             setTimeout(generateSequence, 1000);
@@ -211,23 +234,13 @@ function passSequence() {
     setTimeout(generateSequence, 1000);
 }
 
-function exitGame() {
-    alert("🚪 Thank you for playing!");
-    window.close();
-}
-
 function restartGame() {
-    correctCount = 0;
-    currentIndex = 0;
-    attempt = 0;
-    document.getElementById("correctCount").innerText = "Correct Answers: 0 / 8";
-    document.getElementById("clue").style.display = "none";
-    document.getElementById("exit").style.display = "none";
-    document.getElementById("restart").style.display = "none";
-    generateSequence();
+    document.getElementById("restart").style.display = "none"; // Hide restart button
+    document.getElementById("clue").style.display = "none";    // Hide clue section
+    document.getElementById("startButton").style.display = "inline-block"; // Show start button again
+    document.getElementById("sequence").innerText = "";        // Clear sequence display
+    document.getElementById("playerInput").value = "";         // Clear input field
 }
-
-generateSequence();
 
 document.getElementById("clueButton").addEventListener("click", function() {
     window.open("https://pahadiboy04.github.io/question2/", "_blank");
